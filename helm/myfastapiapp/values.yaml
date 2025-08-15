@@ -1,0 +1,45 @@
+replicaCount: 1
+
+namespace: policy
+
+image:
+  repository: atlantiscr.azurecr.io/myfastapiapp
+  pullPolicy: IfNotPresent
+  tag: "pr-dd6c0a05a97db812b77fa06f91ad4bdebd0d8f28"
+
+imagePullSecrets: 
+   - name: myacr-secret
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+  automount: true
+  annotations: {}
+  name: ""
+
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+  name: http      
+
+ingress:
+  enabled: false
+
+resources: 
+  limits:
+     cpu: 100m
+     memory: 128Mi
+  requests:
+     cpu: 100m
+     memory: 128Mi
+
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
