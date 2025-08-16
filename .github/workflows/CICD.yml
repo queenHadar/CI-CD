@@ -60,21 +60,13 @@ jobs:
             echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/kubeconfig
             export KUBECONFIG=$HOME/kubeconfig
 
-        # - name: Deploy Helm chart
-        #   run: |
-        #     helm upgrade --install ${{ env.CHART_NAME }} \
-        #       oci:${{ secrets.ACR_LOGIN_SERVER }}/helm/${{ env.CHART_NAME }} \
-        #       --version ${{ env.CHART_VERSION }} \
-        #       --set image.repository=${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }} \
-        #       --set image.tag=pr-${{ github.sha }}
+        - name: Helm login
+          run: helm registry login ${{ secrets.ACR_LOGIN_SERVER }} -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
+
+        - name: Pull Helm chart
+          run: helm pull oci://${{ secrets.ACR_LOGIN_SERVER }}/myfastapiapp --version ${{ env.CHART_VERSION }} --untar
 
         - name: Deploy Helm chart
-          run: |
-            echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/kubeconfig
-            export KUBECONFIG=$HOME/kubeconfig
-            kubectl get nodes   
-            helm upgrade --install ${{ env.CHART_NAME }} \
-              oci:${{ secrets.ACR_LOGIN_SERVER }}/helm/${{ env.CHART_NAME }} \
-              --version ${{ env.CHART_VERSION }} \
+          run: helm upgrade --install ${{ env.CHART_NAME }} ./myfastapiapp \
               --set image.repository=${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }} \
               --set image.tag=pr-${{ github.sha }}
