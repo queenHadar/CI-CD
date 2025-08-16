@@ -55,11 +55,6 @@ jobs:
         - name: Checkout code
           uses: actions/checkout@v4
 
-        - name: Set Kubeconfig
-          run: |
-            echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/kubeconfig
-            export KUBECONFIG=$HOME/kubeconfig
-
         - name: Helm login
           run: helm registry login ${{ secrets.ACR_LOGIN_SERVER }} -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
 
@@ -68,6 +63,9 @@ jobs:
 
         - name: Deploy Helm chart
           run: |
+            echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/kubeconfig
+            export KUBECONFIG=$HOME/kubeconfig
             helm upgrade --install ${{ env.CHART_NAME }} ./${{ env.CHART_NAME }} \
               --set image.repository=${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }} \
               --set image.tag=pr-${{ github.sha }}
+
