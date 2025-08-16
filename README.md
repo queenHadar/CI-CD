@@ -26,11 +26,11 @@ terraform init
 terraform plan -var-file="prod.tfvars"
 terraform apply -var-file="prod.tfvars"
 ```
-Using prod.tfvars ensures environment-specific variables are applied consistently.
+Using prod.tfvars ensures environment-specific variables are applied consistently
 
 ### Application
-* FastAPI service located in the /server directory.
-* Dockerized for deployment to AKS.
+* FastAPI service located in the /server directory
+* Dockerized for deployment to AKS
 
 ### CI/CD Workflow
 The pipeline is configured using GitHub Actions:
