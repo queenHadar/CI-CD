@@ -1,5 +1,6 @@
 
 # AKS CI/CD with Terraform & GitHub Actions
+<img width="1336" height="1063" alt="Untitled Diagram drawio (3)" src="https://github.com/user-attachments/assets/d5bc8a66-c052-44d4-b3dc-8cfd59e7d7e7" />
 
 ### Overview
 

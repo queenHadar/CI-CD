@@ -7,15 +7,17 @@ on:
     paths:
       - 'server/**' 
 
-
+env:
+  IMAGE_NAME: myfastapiapp
+  CHART_NAME: myfastapiapp
+  CHART_VERSION: 0.1.0
+  
 jobs:
   build-test-push-automerge:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
-    env:
-      IMAGE_NAME: myfastapiapp
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -53,6 +55,10 @@ jobs:
         - name: Checkout code
           uses: actions/checkout@v4
 
+        - name: Log in to ACR
+          run: |
+            echo ${{ secrets.ACR_PASSWORD }} | docker login ${{ secrets.ACR_LOGIN_SERVER }} -u ${{ secrets.ACR_USERNAME }} --password-stdin
+
         - name: Set Kubeconfig
           run: |
             echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/kubeconfig
@@ -60,6 +66,7 @@ jobs:
 
         - name: Deploy Helm chart
           run: |
-            helm upgrade --install myfastapiapp ./server/chart \
+            helm upgrade --install ${{ env.CHART_NAME }} oci:${{ secrets.ACR_LOGIN_SERVER }/helm/${{ env.CHART_NAME }} \
+              --version ${{ env.CHART_VERSION }} \
               --set image.repository=${{ secrets.ACR_LOGIN_SERVER }}/{{ env.IMAGE_NAME }} \
               --set image.tag=pr-${{ github.sha }}
