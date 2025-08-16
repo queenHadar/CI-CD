@@ -52,15 +52,19 @@ On main branch:
 * A custom Helm chart is used to deploy the application to AKS
 * The image repository and tag are dynamically updated by the GitHub Actions workflow
 
+#### CI/CD Note
+
+Important: The GitHub Actions workflow will not run out-of-the-box in this public repository because the required secrets (ACR_USERNAME, ACR_PASSWORD, KUBE_CONFIG_DATA) were removed after testing for security
+
 ### Challenges & Resolutions
 | Challenge | Resolution |
 |-----------|------------|
-| Managing secrets (kubeconfig, ACR creds) | Stored in GitHub Actions Secrets  (KUBE_CONFIG_DATA, AZURE_CREDENTIALS). 
+| Managing secrets (kubeconfig, ACR creds) | Stored in GitHub Actions Secrets  (KUBE_CONFIG_DATA, AZURE_CREDENTIALS)
 
 ### Future Improvements
 
 #### GitOps with ArgoCD
-Use ArgoCD to manage Helm values in a Git repository instead of deploying directly, enabling automated synchronization to AKS.
+Use ArgoCD to manage Helm values in a Git repository instead of deploying directly, enabling automated synchronization to AKS
 
 #### Terraform Remote State
 Store Terraform state in an S3-compatible backend to enable:
@@ -68,4 +72,5 @@ Store Terraform state in an S3-compatible backend to enable:
 - Automated infrastructure updates
 - Better team collaboration via CI/CD pipelines
 
-
+#### ACR Cleanup Automation
+Set up a scheduled script or GitHub Actions cron job to automatically remove older Docker images from your Azure Container Registry. This prevents the registry from growing too large and helps manage storage costs
